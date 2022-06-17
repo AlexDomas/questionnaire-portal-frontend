@@ -4,6 +4,7 @@ const API_URL = "http://localhost:8080/api/"
 
 const LOGIN_ENDPOINT = "login"
 const REGISTRATION_ENDPOINT = "register"
+const QUESTIONNAIRE_ENDPOINT = "questionnaires"
 
 
 class AuthService {
@@ -22,6 +23,10 @@ class AuthService {
                 }
                 return response.data;
             });
+    }
+
+    getUserQuestionnaireUrl() {
+        return QUESTIONNAIRE_ENDPOINT + "/" + localStorage.getItem("userId")
     }
 
     register(firstname, lastname, phone, email, password) {
