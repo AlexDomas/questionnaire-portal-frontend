@@ -4,6 +4,8 @@ import React, {Component} from "react";
 import AuthService from "../../services/AuthenticationService";
 import QuestionnaireService from "../../services/QuestionnaireService";
 import {Navigate, useParams} from "react-router-dom";
+import "../../style.css";
+
 
 const OPTIONS_DELIMITER = "~!@#%&_&%#@!~";
 
@@ -21,8 +23,6 @@ class QuestionnairePage extends Component {
         }
     }
 
-    //todo: add handlers to values
-
     createAnswerField(field) {
         if (!field.active) {
             return ""
@@ -30,10 +30,12 @@ class QuestionnairePage extends Component {
         const requiredStar = field.required
             ? <span className="text-danger required">*</span>
             : "";
+
         let controlElement = ""
-        // eslint-disable-next-line default-case
+
         switch (field.fieldType) {
             case "DATE":
+                controlElement = (<input class="form-select" type="date" id="start" name={field.label}/>)
                 break
             case "SINGLE_LINE_TEXT":
                 controlElement = (<Form.Control name={field.label} className="text-dark" type="text"/>)
@@ -45,27 +47,28 @@ class QuestionnairePage extends Component {
                 controlElement = field.fieldOptions.replaceAll(OPTIONS_DELIMITER, " ").split(" ")
 
                     .map((option) => {
-                        return (<Form.Check name={field.label} type="radio">{option}</Form.Check>)
+                        return (<Form.Check><input
+                            class="form-check-input" type="radio" name={field.label} value={option}/>
+                            &nbsp;&nbsp;{option}</Form.Check>)
+
                     })
                 break
             case "CHECKBOX":
-
                 controlElement = (<Form.Check name={field.label} type="checkbox"/>)
                 break
             case "COMBOBOX":
                 controlElement = (
-                    <Form.Select name={field.label} multiple>
+                    <Form.Select name={field.label}>
+                        <option selected disabled hidden>Select option</option>
                         {
                             field.fieldOptions.replaceAll(OPTIONS_DELIMITER, " ").split(" ")
                                 .map((option) => {
-                                    return ((<option key={option}>{option}</option>))
-
-
-
+                                    return (
+                                        <option key={option}>{option}</option>
+                                    )
                                 })
                         }
                     </Form.Select>
-
                 )
                 break
         }

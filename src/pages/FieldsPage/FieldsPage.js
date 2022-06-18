@@ -17,6 +17,7 @@ import React, {Component} from "react";
 import AuthService from "../../services/AuthenticationService";
 import {Navigate} from "react-router-dom";
 import FieldService from "../../services/FieldService";
+import "../../style.css";
 
 const OPTIONS_DELIMITER = "~!@#%&_&%#@!~";
 
@@ -215,6 +216,17 @@ class FieldsPage extends Component {
                                 required: r.data.required,
                                 modalSuccess: "Field was successfully updated",
                             })
+                            FieldService.getAllFields()
+                                .then(
+                                    (r) => {
+                                        this.setState({
+                                            fields: r.data.content,
+                                        })
+                                    },
+                                    error => {
+                                        this.setState({message: error.response.data})
+                                    }
+                                )
                         },
                         error => {
                             this.setState({modalMessage: error.response.data})
@@ -230,6 +242,17 @@ class FieldsPage extends Component {
                                 fieldType: "COMBOBOX",
                                 fieldOptions: ""
                             })
+                            FieldService.getAllFields()
+                                .then(
+                                    (r) => {
+                                        this.setState({
+                                            fields: r.data.content,
+                                        })
+                                    },
+                                    error => {
+                                        this.setState({message: error.response.data})
+                                    }
+                                )
                         },
                         error => {
                             this.setState({
@@ -268,11 +291,11 @@ class FieldsPage extends Component {
                     <Container style={{width: '80vw'}} className="bg-white border mt-4 p-0">
                         <div className="d-flex justify-content-between p-3">
                             <h3>Fields</h3>
-                            <Breadcrumb>
-                                <a href={this.state.questionnaireUrl}><h2>My Questionnaire</h2></a>
-                            </Breadcrumb>
+
+                                <a className="link-questionnaire" href={this.state.questionnaireUrl}><h2>My Questionnaire</h2></a>
+
                             <Button onClick={handleShow}>
-                                ADD FIELD
+                                <i className="bi bi-plus-lg"></i> ADD FIELD
                             </Button>
                             <Modal
                                 show={this.state.show}
