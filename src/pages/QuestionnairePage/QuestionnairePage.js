@@ -6,10 +6,10 @@ import QuestionnaireService from "../../services/QuestionnaireService";
 import {Navigate, useParams} from "react-router-dom";
 import "../../style.css";
 
-
 const OPTIONS_DELIMITER = "~!@#%&_&%#@!~";
 
 class QuestionnairePage extends Component {
+
     constructor(props) {
         super(props);
         this.createAnswerField = this.createAnswerField.bind(this)
@@ -50,7 +50,6 @@ class QuestionnairePage extends Component {
                         return (<Form.Check><input
                             class="form-check-input" type="radio" name={field.label} value={option}/>
                             &nbsp;&nbsp;{option}</Form.Check>)
-
                     })
                 break
             case "CHECKBOX":
@@ -81,6 +80,7 @@ class QuestionnairePage extends Component {
     }
 
     handleSubmit(e) {
+
         this.setState({
             message: ""
         })
@@ -89,8 +89,8 @@ class QuestionnairePage extends Component {
         e.preventDefault();
         for (let [key, value] of formData.entries()) {
             this.state.answers.push({
-                "label" : key,
-                "value" : value
+                "label": key,
+                "value": value
             })
         }
 
@@ -98,7 +98,7 @@ class QuestionnairePage extends Component {
         for (let i = 0; i < this.state.fields.length; i++) {
             if (!this.state.fields[i].active) {
                 result.push({
-                    position: (i+1),
+                    position: (i + 1),
                     value: "N/A"
                 })
                 continue
@@ -109,12 +109,12 @@ class QuestionnairePage extends Component {
                 if (this.state.fields[i].fieldType === "CHECKBOX") {
                     if (value.length === 0) {
                         result.push({
-                            position: (i+1),
+                            position: (i + 1),
                             value: false
                         })
                     } else {
                         result.push({
-                            position: (i+1),
+                            position: (i + 1),
                             value: true
                         })
                     }
@@ -128,12 +128,12 @@ class QuestionnairePage extends Component {
                     return
                 } else if (value.length > 0 && this.state.fields[i].fieldType === "COMBOBOX") {
                     result.push({
-                        position: (i+1),
+                        position: (i + 1),
                         value: value.map((v) => v.value).join(", ")
                     })
                 } else {
                     result.push({
-                        position: (i+1),
+                        position: (i + 1),
                         value: value[0].value
                     })
                 }
@@ -141,17 +141,17 @@ class QuestionnairePage extends Component {
                 const value = this.state.answers.filter((answer) => answer.label === this.state.fields[i].label)
                 if (value.length === 0) {
                     result.push({
-                        position: (i+1),
+                        position: (i + 1),
                         value: "N/A"
                     })
                 } else if (value.length > 0 && this.state.fields[i].fieldType === "COMBOBOX") {
                     result.push({
-                        position: (i+1),
+                        position: (i + 1),
                         value: value.map((v) => v.value).join(", ")
                     })
-                }else {
+                } else {
                     result.push({
-                        position: (i+1),
+                        position: (i + 1),
                         value: value[0].value
                     })
                 }

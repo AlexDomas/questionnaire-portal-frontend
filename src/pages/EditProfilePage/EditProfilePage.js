@@ -6,6 +6,7 @@ import AuthenticationService from "../../services/AuthenticationService";
 import {Navigate} from "react-router-dom";
 
 class EditProfilePage extends Component {
+
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);

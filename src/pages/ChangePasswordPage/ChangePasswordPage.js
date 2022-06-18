@@ -4,6 +4,7 @@ import React, {Component} from "react";
 import UserProfileService from "../../services/UserProfileService";
 
 class ChangePasswordPage extends Component {
+
     constructor(props) {
         super(props);
         this.onChangeCurrentPassword = this.onChangeCurrentPassword.bind(this)

@@ -13,8 +13,7 @@ export class ProfileNavbar extends React.Component {
     handleLogout() {
         AuthService.logout()
     }
-
-
+    
     render() {
         if (this.state.authorized) {
             return (

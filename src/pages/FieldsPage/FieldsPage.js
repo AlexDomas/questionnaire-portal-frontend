@@ -141,7 +141,7 @@ class FieldsPage extends Component {
 
     componentDidMount() {
         this.setState({
-            questionnaireUrl : AuthService.getUserQuestionnaireUrl()
+            questionnaireUrl: AuthService.getUserQuestionnaireUrl()
         })
         FieldService.getAllFields()
             .then(
@@ -289,14 +289,18 @@ class FieldsPage extends Component {
                 <div className="bg-light" style={{height: '100vh'}}>
                     <ProfileNavbar auth={true}/>
                     <Container style={{width: '80vw'}} className="bg-white border mt-4 p-0">
+
                         <div className="d-flex justify-content-between p-3">
+
                             <h3>Fields</h3>
 
-                                <a className="link-questionnaire" href={this.state.questionnaireUrl}><h2>My Questionnaire</h2></a>
+                            <a className="link-questionnaire" href={this.state.questionnaireUrl}><h2>My
+                                Questionnaire</h2></a>
 
                             <Button onClick={handleShow}>
                                 <i className="bi bi-plus-lg"></i> ADD FIELD
                             </Button>
+
                             <Modal
                                 show={this.state.show}
                                 onHide={handleClose}
@@ -461,11 +465,13 @@ class FieldsPage extends Component {
                                             <td>{field.active ? "True" : "False"}</td>
                                             <td className="d-flex justify-content-end">
                                                 <div>
-                                                    <i className="bi bi-pencil-square" onClick={() => this.getUpdateFieldData(this.getFieldPosInList(field) + 1)}></i>
+                                                    <i className="bi bi-pencil-square"
+                                                       onClick={() => this.getUpdateFieldData(this.getFieldPosInList(field) + 1)}></i>
                                                 </div>
                                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                                 <div>
-                                                    <i className="bi bi-trash-fill" onClick={() => this.deleteField(this.getFieldPosInList(field) + 1)}></i>
+                                                    <i className="bi bi-trash-fill"
+                                                       onClick={() => this.deleteField(this.getFieldPosInList(field) + 1)}></i>
                                                 </div>
                                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                             </td>
