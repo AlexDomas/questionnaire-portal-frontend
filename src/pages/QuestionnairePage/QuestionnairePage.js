@@ -28,7 +28,7 @@ class QuestionnairePage extends Component {
             return ""
         }
         const requiredStar = field.required
-            ? <span className="text-danger required">*</span>
+            ? <span className="text-danger required"> *</span>
             : "";
 
         let controlElement = ""

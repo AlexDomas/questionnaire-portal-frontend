@@ -6,6 +6,7 @@ import FieldsPage from "./pages/FieldsPage/FieldsPage";
 import EditProfilePage from "./pages/EditProfilePage/EditProfilePage";
 import ChangePasswordPage from "./pages/ChangePasswordPage/ChangePasswordPage";
 import QuestionnairePage from "./pages/QuestionnairePage/QuestionnairePage";
+import ResponsePage from "./pages/ResponsePage/ResponsePage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
             <Route path="/questionnaires">
                 <Route path=":questionnaireId" element={<QuestionnairePage/>}/>
             </Route>
+            <Route path="/responses" element={<ResponsePage/>}/>
             <Route path="/fields" element={<FieldsPage/>}/>
             <Route path="/change_password" element={<ChangePasswordPage/>}/>
             <Route path="/edit_profile" element={<EditProfilePage/>}/>
