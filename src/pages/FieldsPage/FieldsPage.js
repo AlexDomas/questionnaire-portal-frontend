@@ -64,6 +64,12 @@ class FieldsPage extends Component {
         this.setState({
             fieldType: e.target.value
         })
+
+        if (e.target.value === 'COMBOBOX' || e.target.value === 'RADIO BUTTON') {
+            document.getElementById("optionsTextArea").disabled = false;
+        } else {
+            document.getElementById("optionsTextArea").disabled = true;
+        }
     }
 
     onOptionsChange(e) {
@@ -178,7 +184,7 @@ class FieldsPage extends Component {
             return false
         }
 
-        if (this.state.fieldType === 'COMBOBOX' || this.state.fieldType === 'RADIOBUTTON') {
+        if (this.state.fieldType === 'COMBOBOX' || this.state.fieldType === 'RADIO BUTTON') {
             if (!(this.state.fieldOptions && this.state.fieldOptions.toString().trim().length > 0)) {
                 this.setState({
                     modalMessage: "Options can not be empty"
@@ -279,11 +285,13 @@ class FieldsPage extends Component {
                 active: false
             })
         }
+
         const handleShow = () => this.setShow(true);
         const user = AuthService.getCurrentUser()
         if (!(user && user.token && user.token.toString() !== "null")) {
             return <Navigate to="/login"/>
         }
+
         return (
             <>
                 <div className="bg-light" style={{height: '100vh'}}>
@@ -367,11 +375,11 @@ class FieldsPage extends Component {
                                                     </div>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control
-                                                        onChange={this.onOptionsChange}
-                                                        as="textarea"
-                                                        value={this.state.fieldOptions}
-                                                        rows={5}
+                                                    <Form.Control id="optionsTextArea"
+                                                                  onChange={this.onOptionsChange}
+                                                                  as="textarea"
+                                                                  value={this.state.fieldOptions}
+                                                                  rows={5}
                                                     />
                                                 </Col>
                                                 <Col xs={3}/>
