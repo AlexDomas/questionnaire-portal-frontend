@@ -10,6 +10,7 @@ import ResponsePage from "./pages/ResponsePage/ResponsePage";
 
 function App() {
   return (
+
       <>
         <Routes>
             <Route path="/questionnaires">
@@ -22,6 +23,7 @@ function App() {
             <Route path="/fields" element={<FieldsPage/>}/>
             <Route path="/register" element={<RegistrationPage/>}/>
             <Route path="/login" element={<LoginPage/>}/>
+            <Route path="/" element={<LoginPage/>}/>
             <Route path="*" element={<PageNotFound/>}/>
         </Routes>
       </>

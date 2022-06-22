@@ -491,7 +491,7 @@ class FieldsPage extends Component {
                                 </div>
                             )}
                             <div className="d-flex justify-content-between">
-                                <label>1-3 of 3</label>
+                                <label>1-6 of 6</label>
                                 <Pagination>
                                     <Pagination.Prev/>
                                     <Pagination.Item active>{1}</Pagination.Item>
