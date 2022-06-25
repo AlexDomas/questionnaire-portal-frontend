@@ -41,7 +41,7 @@ class QuestionnairePage extends Component {
                 controlElement = (<Form.Control name={field.label} className="text-dark" type="text"/>)
                 break
             case "MULTILINE_TEXT":
-                controlElement = (<Form.Control name={field.label} className="text-dark" type="textarea"/>)
+                controlElement = (<Form.Control name={field.label} className="text-dark" type="textarea" as="textarea" rows={5}/>)
                 break
             case "RADIO_BUTTON":
                 controlElement = field.fieldOptions.replaceAll(OPTIONS_DELIMITER, " ").split(" ")

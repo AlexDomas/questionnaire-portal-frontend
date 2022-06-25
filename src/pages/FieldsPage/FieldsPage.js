@@ -17,6 +17,7 @@ import AuthService from "../../services/AuthenticationService";
 import {Navigate} from "react-router-dom";
 import FieldService from "../../services/FieldService";
 import "../../style.css";
+import AppPagination from "../../components/Pagination/AppPagination";
 
 const OPTIONS_DELIMITER = "~!@#%&_&%#@!~";
 
@@ -26,6 +27,7 @@ class FieldsPage extends Component {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this)
         this.setShow = this.setShow.bind(this)
+        this.setLoading = this.setLoading.bind(this)
         this.onTypeChange = this.onTypeChange.bind(this)
         this.onLabelChange = this.onLabelChange.bind(this)
         this.onOptionsChange = this.onOptionsChange.bind(this)
@@ -34,7 +36,11 @@ class FieldsPage extends Component {
         this.getFieldPosInList = this.getFieldPosInList.bind(this)
         this.deleteField = this.deleteField.bind(this)
         this.getUpdateFieldData = this.getUpdateFieldData.bind(this)
+        this.setCurrentPage = this.setCurrentPage.bind(this)
         this.state = {
+            loading: false,
+            currentPage: 1,
+            fieldsPerPage: 2,
             show: false,
             page: 0,
             size: 20,
@@ -51,6 +57,18 @@ class FieldsPage extends Component {
             update: "",
             questionnaireUrl: "",
         }
+    }
+
+    setCurrentPage(value) {
+        this.setState({
+            currentPage: value
+        })
+    }
+
+    setLoading(value) {
+        this.setState({
+            loading: value
+        })
     }
 
     onLabelChange(e) {
@@ -148,12 +166,18 @@ class FieldsPage extends Component {
         this.setState({
             questionnaireUrl: AuthService.getUserQuestionnaireUrl()
         })
+        this.setLoading(true);
         FieldService.getAllFields()
             .then(
                 (r) => {
                     this.setState({
                         fields: r.data.content,
                     })
+                    this.setLoading(false);
+                    if(!window.location.hash) {
+                        window.location = window.location + '#r';
+                        window.location.reload();
+                    }
                 },
                 error => {
                     this.setState({message: error.response.data})
@@ -277,17 +301,36 @@ class FieldsPage extends Component {
                 modalSuccess: "",
                 update: "",
                 label: "",
-                fieldType: "COMBOBOX",
+                fieldType: "",
                 fieldOptions: "",
+
                 required: false,
                 active: false
             })
         }
 
+
+
+        const lastFieldIndex = this.state.currentPage * this.state.fieldsPerPage;
+        const firstFieldIndex = lastFieldIndex - this.state.fieldsPerPage;
+        const currentField = this.state.fields.slice(firstFieldIndex, lastFieldIndex);
+
+        const paginate = pageNumber => this.setCurrentPage(pageNumber)
+
+        const nextPage = () => this.setCurrentPage( this.state.currentPage + 1 )
+
+        const previousPage = () => this.setCurrentPage( this.state.currentPage - 1 )
+
         const handleShow = () => this.setShow(true);
+
         const user = AuthService.getCurrentUser()
         if (!(user && user.token && user.token.toString() !== "null")) {
             return <Navigate to="/login"/>
+        }
+
+        if(!window.location.hash) {
+            window.location = window.location + '?r';
+            window.location.reload();
         }
 
         return (
@@ -351,7 +394,7 @@ class FieldsPage extends Component {
                                                 </Col>
                                                 <Col>
                                                     <Form.Select onChange={this.onTypeChange}
-                                                                 defaultValue={this.state.fieldType}>
+                                                                 value={this.state.fieldType}>
                                                         <option>COMBOBOX</option>
                                                         <option>CHECKBOX</option>
                                                         <option>DATE</option>
@@ -463,7 +506,7 @@ class FieldsPage extends Component {
                                 </thead>
                                 <tbody>
                                 {
-                                    this.state.fields.map((field) => (
+                                    currentField.map((field) => (
                                         <tr key={field.label}>
                                             <td>{field.label}</td>
                                             <td>{field.fieldType.toString().replaceAll("_", " ")}</td>
@@ -496,20 +539,14 @@ class FieldsPage extends Component {
                                     {this.state.successMessage}
                                 </div>
                             )}
-                            <div className="d-flex justify-content-between">
-                                <label>1-6 of 6</label>
-                                <Pagination>
-                                    <Pagination.Prev/>
-                                    <Pagination.Item active>{1}</Pagination.Item>
-                                    <Pagination.Item>{2}</Pagination.Item>
-                                    <Pagination.Next/>
-                                </Pagination>
-                                <div className="pb-3">
-                                    <DropdownButton id="sortingType" title="All" variant="white" className="border">
-                                        <Dropdown.Item href="/">Some action</Dropdown.Item>
-                                    </DropdownButton>
-                                </div>
-                            </div>
+                            <AppPagination
+                                fieldsPerPage={this.state.fieldsPerPage}
+                                totalFields={this.state.fields.length}
+                                paginate={paginate}
+                                nextPage={nextPage}
+                                previousPage={previousPage}
+                                currentPage={this.state.currentPage}
+                            />
                         </div>
                     </Container>
                 </div>
