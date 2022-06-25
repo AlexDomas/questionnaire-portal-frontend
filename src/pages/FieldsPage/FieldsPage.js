@@ -1,7 +1,6 @@
 import {ProfileNavbar} from "../../components/ProfileNavbar/ProfileNavbar";
 
 import {
-    Breadcrumb, BreadcrumbItem,
     Button,
     Col,
     Container,
@@ -269,7 +268,6 @@ class FieldsPage extends Component {
             }
         }
     }
-
 
     render() {
         const handleClose = () => {
