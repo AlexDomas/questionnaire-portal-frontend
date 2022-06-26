@@ -13,7 +13,7 @@
 
 .infoFields{
     position: relative;
-    left: -10px;
+    left: -5px;
     margin-top: 10px;
     text-decoration: none !important;
     border: none !important;
@@ -21,7 +21,7 @@
 }
 
 .pagination{
-    margin-left: 420px;
+    margin-left: 380px;
 }
 
 #select-option{
@@ -31,6 +31,6 @@
     overflow: hidden;
     padding: 2px 4px;
     box-sizing: border-box;
-    margin-left: 420px;
+    margin-left: 400px;
 }
 

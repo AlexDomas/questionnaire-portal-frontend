@@ -4,11 +4,8 @@ import {
     Button,
     Col,
     Container,
-    Dropdown,
-    DropdownButton,
     Form,
     Modal,
-    Pagination,
     Row,
     Table
 } from "react-bootstrap";
@@ -160,6 +157,11 @@ class FieldsPage extends Component {
                         active: r.data.active,
                         required: r.data.required
                     })
+                    if (r.data.fieldType === 'COMBOBOX' || r.data.fieldType === 'RADIO BUTTON') {
+                        document.getElementById("optionsTextArea").disabled = false;
+                    } else {
+                        document.getElementById("optionsTextArea").disabled = true;
+                    }
                 },
                 error => {
                     this.setState({modalMessage: error.response.data})
@@ -578,6 +580,7 @@ class FieldsPage extends Component {
                                 nextPage={nextPage}
                                 previousPage={previousPage}
                                 currentPage={this.state.currentPage}
+                                currentField={currentField}
                             />
                         </div>
                     </Container>

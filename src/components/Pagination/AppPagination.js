@@ -3,7 +3,7 @@ import {useEffect} from 'react';
 import {Button, Container, Form} from "react-bootstrap";
 import "../../style.css";
 
-const AppPagination = ({fieldsPerPage, totalFields, paginate, nextPage, previousPage, currentPage}) => {
+const AppPagination = ({fieldsPerPage, totalFields, paginate, nextPage, previousPage, currentPage, currentField}) => {
 
     const pageNumbers = []
 
@@ -12,7 +12,7 @@ const AppPagination = ({fieldsPerPage, totalFields, paginate, nextPage, previous
     }
 
     useEffect(() => {
-            if(currentPage === 1 && currentPage === Math.ceil(totalFields / fieldsPerPage)){
+            if((currentPage === 1 && currentPage === Math.ceil(totalFields / fieldsPerPage) || currentPage > Math.ceil(totalFields / fieldsPerPage))){
                 document.getElementById("previousPageId").disabled = true;
                 document.getElementById("previousPageId").style.color = "#808080";
                 document.getElementById("nextPageId").disabled = true;
@@ -23,33 +23,28 @@ const AppPagination = ({fieldsPerPage, totalFields, paginate, nextPage, previous
                 document.getElementById("nextPageId").style.color = "#808080";
                 document.getElementById("previousPageId").disabled = false;
                 document.getElementById("previousPageId").style.color = "#0d6efd";
-                console.log(1);
             } else if (currentPage === 1) {
                 document.getElementById("previousPageId").disabled = true;
                 document.getElementById("previousPageId").style.color = "#808080";
                 document.getElementById("nextPageId").disabled = false;
                 document.getElementById("nextPageId").style.color = "#0d6efd";
-                console.log(2);
             } else {
                 document.getElementById("nextPageId").disabled = false;
                 document.getElementById("nextPageId").style.color = "#0d6efd";
                 document.getElementById("previousPageId").disabled = false;
                 document.getElementById("previousPageId").style.color = "#0d6efd";
-                console.log(4);
             }
         }, [currentPage, previousPage, nextPage]
-    )
-    ;
+    );
 
     return (
         <div className="d-flex justify-content-center">
-            <a className="infoFields">1 - {fieldsPerPage} of {totalFields}</a>
+            <a className="infoFields">1 - {currentField.length} of {totalFields}</a>
             <ul className="pagination">
                 <button className="page-link" id="previousPageId" onClick={() => previousPage()}>&#9668;</button>
                 {
                     pageNumbers.map(number => (
                         <li className="page-item" key={number}>
-
                             <button className="page-link" id="idPageNumber" onClick={() => paginate(number)}>
                                 {number}
                             </button>
