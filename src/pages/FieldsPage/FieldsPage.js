@@ -37,6 +37,7 @@ class FieldsPage extends Component {
         this.deleteField = this.deleteField.bind(this)
         this.getUpdateFieldData = this.getUpdateFieldData.bind(this)
         this.setCurrentPage = this.setCurrentPage.bind(this)
+        this.setFieldsPerPage = this.setFieldsPerPage.bind(this)
         this.state = {
             loading: false,
             currentPage: 1,
@@ -57,6 +58,12 @@ class FieldsPage extends Component {
             update: "",
             questionnaireUrl: "",
         }
+    }
+
+    setFieldsPerPage(value) {
+        this.setState({
+            fieldsPerPage: value
+        })
     }
 
     setCurrentPage(value) {
@@ -81,7 +88,6 @@ class FieldsPage extends Component {
         this.setState({
             fieldType: e.target.value
         })
-
         if (e.target.value === 'COMBOBOX' || e.target.value === 'RADIO BUTTON') {
             document.getElementById("optionsTextArea").disabled = false;
         } else {
@@ -167,14 +173,43 @@ class FieldsPage extends Component {
             questionnaireUrl: AuthService.getUserQuestionnaireUrl()
         })
         this.setLoading(true);
+
+        const element = document.querySelector('#select-option');
+        element.addEventListener("change", (event) => {
+            switch (event.target.value) {
+                case "0":
+                    this.setFieldsPerPage(this.state.fields.length);
+                    this.setCurrentPage(1);
+                    break;
+                case "1":
+                    this.setFieldsPerPage(1);
+                    this.setCurrentPage(1);
+                    break;
+                case "2":
+                    this.setFieldsPerPage(2);
+                    this.setCurrentPage(1);
+                    break;
+                case "3":
+                    this.setFieldsPerPage(5);
+                    this.setCurrentPage(1);
+                    break;
+                default:
+                    this.setFieldsPerPage(10);
+                    this.setCurrentPage(1);
+                    break;
+
+            }
+        });
+
         FieldService.getAllFields()
             .then(
                 (r) => {
                     this.setState({
                         fields: r.data.content,
                     })
+
                     this.setLoading(false);
-                    if(!window.location.hash) {
+                    if (!window.location.hash) {
                         window.location = window.location + '#r';
                         window.location.reload();
                     }
@@ -183,7 +218,6 @@ class FieldsPage extends Component {
                     this.setState({message: error.response.data})
                 }
             )
-
     }
 
     setShow(value) {
@@ -309,17 +343,15 @@ class FieldsPage extends Component {
             })
         }
 
-
-
         const lastFieldIndex = this.state.currentPage * this.state.fieldsPerPage;
         const firstFieldIndex = lastFieldIndex - this.state.fieldsPerPage;
         const currentField = this.state.fields.slice(firstFieldIndex, lastFieldIndex);
 
         const paginate = pageNumber => this.setCurrentPage(pageNumber)
 
-        const nextPage = () => this.setCurrentPage( this.state.currentPage + 1 )
+        const nextPage = () => this.setCurrentPage(this.state.currentPage + 1)
 
-        const previousPage = () => this.setCurrentPage( this.state.currentPage - 1 )
+        const previousPage = () => this.setCurrentPage(this.state.currentPage - 1)
 
         const handleShow = () => this.setShow(true);
 
@@ -328,7 +360,7 @@ class FieldsPage extends Component {
             return <Navigate to="/login"/>
         }
 
-        if(!window.location.hash) {
+        if (!window.location.hash) {
             window.location = window.location + '?r';
             window.location.reload();
         }

@@ -14,12 +14,20 @@ class QuestionnairePage extends Component {
         super(props);
         this.createAnswerField = this.createAnswerField.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.resetAnswers = this.resetAnswers.bind(this)
         this.state = {
             fields: [],
             answers: [],
             message: "",
             redirect: "",
             param: props.params.questionnaireId.toString()
+        }
+    }
+
+    resetAnswers() {
+        if(!window.location.hash) {
+            window.location = window.location + '?r';
+            window.location.reload();
         }
     }
 
@@ -198,6 +206,10 @@ class QuestionnairePage extends Component {
                             {this.state.fields.map((field) => this.createAnswerField(field))}
                             <Button className="w-25" variant="primary" type="submit">
                                 SUBMIT
+                            </Button>
+                            &nbsp;&nbsp;
+                            <Button className="w-25" onClick={this.resetAnswers} variant="secondary">
+                                RESET
                             </Button>
                             {this.state.message && (
                                 <div className="mt-3 alert alert-danger" role="alert">
