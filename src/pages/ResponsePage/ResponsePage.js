@@ -6,6 +6,7 @@ import {Navigate} from "react-router-dom";
 import ResponseService from "../../services/ResponseService";
 import FieldService from "../../services/FieldService";
 import AppPagination from "../../components/Pagination/AppPagination";
+import "../../style.css";
 
 class ResponsePage extends Component {
     constructor(props) {
@@ -39,7 +40,6 @@ class ResponsePage extends Component {
             loading: value
         })
     }
-
 
     componentDidMount() {
 
@@ -144,7 +144,7 @@ class ResponsePage extends Component {
                                     currentResponse.map((response) => (
                                         <tr key={response.id}>
                                             {response.responses.map((responseValue) =>
-                                                (<td key={responseValue.position}>{responseValue.value}</td>))}
+                                                (<td key={responseValue.position}>{responseValue.value || 'N/A'}</td>))}
                                         </tr>
                                     ))
                                 }

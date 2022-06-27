@@ -88,10 +88,6 @@ class QuestionnairePage extends Component {
         )
     }
 
-    changeStateOfResponses(){
-
-    }
-
     handleSubmit(e) {
 
         this.setState({
@@ -123,7 +119,7 @@ class QuestionnairePage extends Component {
                     if (value.length === 0) {
                         result.push({
                             position: (i + 1),
-                            value: false
+                            value: "N/A"
                         })
                     } else {
                         result.push({
@@ -152,13 +148,11 @@ class QuestionnairePage extends Component {
                 }
             }
             else {
-                const value = this.state.answers.filter((answer) => answer.label === this.state.fields[i].label)
-                const value1 = value.map(x => x.value)
                 if (this.state.fields[i].fieldType === "CHECKBOX") {
                     if (value.length === 0) {
                         result.push({
                             position: (i + 1),
-                            value: false
+                            value: "N/A"
                         })
                     } else {
                         result.push({
@@ -168,21 +162,13 @@ class QuestionnairePage extends Component {
                     }
                     continue
                 }
-                if ((!this.state.fields[i].required) || (!this.state.fields[i].active)) {
-                    if ((value.length === 0) || (value1.toString() === '')) {
-                        result.push({
-                            position: (i + 1),
-                            value: "N/A"
-                        })
-                    } else {
-                        result.push({
-                            position: (i + 1),
-                            value: value[0].value
-                        })
 
-                    }
-                }
-                else if (value.length > 0 && this.state.fields[i].fieldType === "COMBOBOX") {
+                if ((value.length === 0) || (value1.toString() === '')) {
+                    result.push({
+                        position: (i + 1),
+                        value: "N/A"
+                    })
+                } else if (value.length > 0 && this.state.fields[i].fieldType === "COMBOBOX") {
                     result.push({
                         position: (i + 1),
                         value: value.map((v) => v.value).join(", ")

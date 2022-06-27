@@ -15,6 +15,8 @@ import {Navigate} from "react-router-dom";
 import FieldService from "../../services/FieldService";
 import "../../style.css";
 import AppPagination from "../../components/Pagination/AppPagination";
+import ResponseService from "../../services/ResponseService";
+import QuestionnaireService from "../../services/QuestionnaireService";
 
 const OPTIONS_DELIMITER = "~!@#%&_&%#@!~";
 
@@ -36,6 +38,7 @@ class FieldsPage extends Component {
         this.setCurrentPage = this.setCurrentPage.bind(this)
         this.setFieldsPerPage = this.setFieldsPerPage.bind(this)
         this.state = {
+            answers: [],
             loading: false,
             currentPage: 1,
             fieldsPerPage: 2,
@@ -157,7 +160,7 @@ class FieldsPage extends Component {
                         active: r.data.active,
                         required: r.data.required
                     })
-                    if (r.data.fieldType === 'COMBOBOX' || r.data.fieldType === 'RADIO BUTTON') {
+                    if (r.data.fieldType === 'COMBOBOX' || r.data.fieldType === 'RADIO_BUTTON') {
                         document.getElementById("optionsTextArea").disabled = false;
                     } else {
                         document.getElementById("optionsTextArea").disabled = true;
@@ -281,6 +284,7 @@ class FieldsPage extends Component {
                                 required: r.data.required,
                                 modalSuccess: "Field was successfully updated",
                             })
+
                             FieldService.getAllFields()
                                 .then(
                                     (r) => {
