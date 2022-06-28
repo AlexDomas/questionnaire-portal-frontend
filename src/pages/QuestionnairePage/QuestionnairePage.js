@@ -14,12 +14,20 @@ class QuestionnairePage extends Component {
         super(props);
         this.createAnswerField = this.createAnswerField.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.resetAnswers = this.resetAnswers.bind(this)
         this.state = {
             fields: [],
             answers: [],
             message: "",
             redirect: "",
             param: props.params.questionnaireId.toString()
+        }
+    }
+
+    resetAnswers() {
+        if (!window.location.hash) {
+            window.location = window.location + '?r';
+            window.location.reload();
         }
     }
 
@@ -35,13 +43,14 @@ class QuestionnairePage extends Component {
 
         switch (field.fieldType) {
             case "DATE":
-                controlElement = (<input class="form-select" type="date" id="start" name={field.label}/>)
+                controlElement = (<input className="form-select" type="date" id="start" name={field.label}/>)
                 break
             case "SINGLE_LINE_TEXT":
                 controlElement = (<Form.Control name={field.label} className="text-dark" type="text"/>)
                 break
             case "MULTILINE_TEXT":
-                controlElement = (<Form.Control name={field.label} className="text-dark" type="textarea"/>)
+                controlElement = (
+                    <Form.Control name={field.label} className="text-dark" type="textarea" as="textarea" rows={5}/>)
                 break
             case "RADIO_BUTTON":
                 controlElement = field.fieldOptions.replaceAll(OPTIONS_DELIMITER, " ").split(" ")
@@ -96,6 +105,8 @@ class QuestionnairePage extends Component {
 
         const result = []
         for (let i = 0; i < this.state.fields.length; i++) {
+            const value = this.state.answers.filter((answer) => answer.label === this.state.fields[i].label)
+            const value1 = value.map(x => x.value)
             if (!this.state.fields[i].active) {
                 result.push({
                     position: (i + 1),
@@ -104,13 +115,11 @@ class QuestionnairePage extends Component {
                 continue
             }
             if (this.state.fields[i].required) {
-                const value = this.state.answers.filter((answer) => answer.label === this.state.fields[i].label)
-
                 if (this.state.fields[i].fieldType === "CHECKBOX") {
                     if (value.length === 0) {
                         result.push({
                             position: (i + 1),
-                            value: false
+                            value: "N/A"
                         })
                     } else {
                         result.push({
@@ -121,7 +130,7 @@ class QuestionnairePage extends Component {
                     continue
                 }
 
-                if (value.length === 0) {
+                if ((value.length === 0) || (value1.toString() === '')) {
                     this.setState({
                         message: `Required answer for the ${this.state.fields[i].label} field`
                     })
@@ -137,9 +146,24 @@ class QuestionnairePage extends Component {
                         value: value[0].value
                     })
                 }
-            } else {
-                const value = this.state.answers.filter((answer) => answer.label === this.state.fields[i].label)
-                if (value.length === 0) {
+            }
+            else {
+                if (this.state.fields[i].fieldType === "CHECKBOX") {
+                    if (value.length === 0) {
+                        result.push({
+                            position: (i + 1),
+                            value: "N/A"
+                        })
+                    } else {
+                        result.push({
+                            position: (i + 1),
+                            value: true
+                        })
+                    }
+                    continue
+                }
+
+                if ((value.length === 0) || (value1.toString() === '')) {
                     result.push({
                         position: (i + 1),
                         value: "N/A"
@@ -155,6 +179,7 @@ class QuestionnairePage extends Component {
                         value: value[0].value
                     })
                 }
+
             }
         }
         QuestionnaireService.postResponses(this.state.param, result)
@@ -198,6 +223,10 @@ class QuestionnairePage extends Component {
                             {this.state.fields.map((field) => this.createAnswerField(field))}
                             <Button className="w-25" variant="primary" type="submit">
                                 SUBMIT
+                            </Button>
+                            &nbsp;&nbsp;
+                            <Button className="w-25" onClick={this.resetAnswers} variant="secondary">
+                                RESET
                             </Button>
                             {this.state.message && (
                                 <div className="mt-3 alert alert-danger" role="alert">

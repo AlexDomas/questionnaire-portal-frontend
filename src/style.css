@@ -11,3 +11,31 @@
     border: none !important;
 }
 
+.infoFields{
+    position: relative;
+    left: -5px;
+    margin-top: 10px;
+    text-decoration: none !important;
+    border: none !important;
+    color: #000000;
+}
+
+.pagination{
+    margin-left: 380px;
+}
+
+#select-option{
+    display: inline-block;
+    width: 80px; max-width: 100px;
+    height: 40px;
+    overflow: hidden;
+    padding: 2px 4px;
+    box-sizing: border-box;
+    margin-left: 400px;
+}
+
+
+ .table { empty-cells: show; }
+
+
+

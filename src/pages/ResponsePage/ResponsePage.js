@@ -5,23 +5,79 @@ import AuthService from "../../services/AuthenticationService";
 import {Navigate} from "react-router-dom";
 import ResponseService from "../../services/ResponseService";
 import FieldService from "../../services/FieldService";
+import AppPagination from "../../components/Pagination/AppPagination";
+import "../../style.css";
 
 class ResponsePage extends Component {
     constructor(props) {
         super(props);
+        this.setCurrentPage = this.setCurrentPage.bind(this)
+        this.setResponsesPerPage = this.setResponsesPerPage.bind(this)
+        this.setLoading = this.setLoading.bind(this)
         this.state = {
+            loading: false,
+            currentPage: 1,
+            responsesPerPage: 2,
             fields: [],
             responses: []
         }
     }
 
+    setResponsesPerPage(value) {
+        this.setState({
+            responsesPerPage: value
+        })
+    }
+
+    setCurrentPage(value) {
+        this.setState({
+            currentPage: value
+        })
+    }
+
+    setLoading(value) {
+        this.setState({
+            loading: value
+        })
+    }
+
     componentDidMount() {
+
+        this.setLoading(true);
+
+        const element = document.querySelector('#select-option');
+        element.addEventListener("change", (event) => {
+            switch (event.target.value) {
+                case "0":
+                    this.setResponsesPerPage(this.state.responses.length);
+                    this.setCurrentPage(1);
+                    break;
+                case "1":
+                    this.setResponsesPerPage(1);
+                    this.setCurrentPage(1);
+                    break;
+                case "2":
+                    this.setResponsesPerPage(2);
+                    this.setCurrentPage(1);
+                    break;
+                case "3":
+                    this.setResponsesPerPage(5);
+                    this.setCurrentPage(1);
+                    break;
+                default:
+                    this.setResponsesPerPage(10);
+                    this.setCurrentPage(1);
+                    break;
+
+            }
+        });
         ResponseService.getAllFields()
             .then(
                 (r) => {
                     this.setState({
                         responses: r.data.content.filter((response) => response.responses.length > 0),
                     })
+                    this.setLoading(false);
                 },
                 error => {
                     this.setState({message: error.response.data})
@@ -33,6 +89,7 @@ class ResponsePage extends Component {
                     this.setState({
                         fields: r.data.content,
                     })
+                    this.setLoading(false);
                 },
                 error => {
                     this.setState({message: error.response.data})
@@ -41,6 +98,19 @@ class ResponsePage extends Component {
     }
 
     render() {
+
+        const lastResponseIndex = this.state.currentPage * this.state.responsesPerPage;
+
+        const firstResponseIndex = lastResponseIndex - this.state.responsesPerPage;
+
+        const currentResponse = this.state.responses.slice(firstResponseIndex, lastResponseIndex);
+
+        const paginate = pageNumber => this.setCurrentPage(pageNumber)
+
+        const nextPage = () => this.setCurrentPage(this.state.currentPage + 1)
+
+        const previousPage = () => this.setCurrentPage(this.state.currentPage - 1)
+
         const user = AuthService.getCurrentUser()
         if (!(user && user.token && user.token.toString() !== "null")) {
             return <Navigate to="/login"/>
@@ -49,13 +119,13 @@ class ResponsePage extends Component {
             <>
                 <div className="bg-light" style={{height: '100vh'}}>
                     <ProfileNavbar auth={true}/>
-                    <Container style={{width: '70vw'}} className="bg-white border mt-4 p-0">
+                    <Container style={{width: '90vw'}} className="bg-white border mt-4 p-0">
                         <div className="d-flex justify-content-between p-3">
                             <h3>Responses</h3>
                         </div>
                         <hr className="m-0"/>
                         <div className="p-3">
-                            <Table striped hover>
+                            <Table hover>
                                 <thead>
                                 <tr>
                                     {
@@ -71,10 +141,10 @@ class ResponsePage extends Component {
                                 </thead>
                                 <tbody>
                                 {
-                                    this.state.responses.map((response) => (
+                                    currentResponse.map((response) => (
                                         <tr key={response.id}>
                                             {response.responses.map((responseValue) =>
-                                                (<td key={responseValue.position}>{responseValue.value}</td>))}
+                                                (<td key={responseValue.position}>{responseValue.value || 'N/A'}</td>))}
                                         </tr>
                                     ))
                                 }
@@ -85,21 +155,16 @@ class ResponsePage extends Component {
                                     {this.state.message}
                                 </div>
                             )}
-                            <div className="d-flex justify-content-between">
-                                <label>1-4 of 4</label>
-                                <Pagination>
-                                    <Pagination.Prev/>
-                                    <Pagination.Item active>{1}</Pagination.Item>
-                                    <Pagination.Next/>
-                                </Pagination>
-                                <div className="pb-3">
-                                    <DropdownButton id="sortingType" title="All" variant="white" className="border">
-                                        <Dropdown.Item href="/">1</Dropdown.Item>
-                                        <Dropdown.Item href="/">5</Dropdown.Item>
-                                        <Dropdown.Item href="/">10</Dropdown.Item>
-                                    </DropdownButton>
-                                </div>
-                            </div>
+
+                            <AppPagination
+                                fieldsPerPage={this.state.responsesPerPage}
+                                totalFields={this.state.responses.length}
+                                paginate={paginate}
+                                nextPage={nextPage}
+                                previousPage={previousPage}
+                                currentPage={this.state.currentPage}
+                                currentField={currentResponse}
+                            />
                         </div>
                     </Container>
                 </div>
