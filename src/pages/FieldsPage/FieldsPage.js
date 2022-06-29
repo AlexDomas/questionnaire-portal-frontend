@@ -15,8 +15,6 @@ import {Navigate} from "react-router-dom";
 import FieldService from "../../services/FieldService";
 import "../../style.css";
 import AppPagination from "../../components/Pagination/AppPagination";
-import ResponseService from "../../services/ResponseService";
-import QuestionnaireService from "../../services/QuestionnaireService";
 
 const OPTIONS_DELIMITER = "~!@#%&_&%#@!~";
 
@@ -88,7 +86,7 @@ class FieldsPage extends Component {
         this.setState({
             fieldType: e.target.value
         })
-        if (e.target.value === 'COMBOBOX' || e.target.value === 'RADIO BUTTON') {
+        if (e.target.value === 'COMBOBOX' || e.target.value === 'RADIO BUTTON' || e.target.value === "CHECKBOX") {
             document.getElementById("optionsTextArea").disabled = false;
         } else {
             document.getElementById("optionsTextArea").disabled = true;
@@ -160,7 +158,7 @@ class FieldsPage extends Component {
                         active: r.data.active,
                         required: r.data.required
                     })
-                    if (r.data.fieldType === 'COMBOBOX' || r.data.fieldType === 'RADIO_BUTTON') {
+                    if (r.data.fieldType === 'COMBOBOX' || r.data.fieldType === 'RADIO_BUTTON' || r.data.fieldType === "CHECKBOX") {
                         document.getElementById("optionsTextArea").disabled = false;
                     } else {
                         document.getElementById("optionsTextArea").disabled = true;
@@ -246,7 +244,7 @@ class FieldsPage extends Component {
             return false
         }
 
-        if (this.state.fieldType === 'COMBOBOX' || this.state.fieldType === 'RADIO BUTTON') {
+        if (this.state.fieldType === 'COMBOBOX' || this.state.fieldType === 'RADIO BUTTON' || this.state.fieldType === 'CHECKBOX') {
             if (!(this.state.fieldOptions && this.state.fieldOptions.toString().trim().length > 0)) {
                 this.setState({
                     modalMessage: "Options can not be empty"
@@ -284,7 +282,6 @@ class FieldsPage extends Component {
                                 required: r.data.required,
                                 modalSuccess: "Field was successfully updated",
                             })
-
                             FieldService.getAllFields()
                                 .then(
                                     (r) => {
@@ -509,7 +506,7 @@ class FieldsPage extends Component {
                                             onClick={handleClose}>
                                         <p className="fw-bold m-0">CANCEL</p>
                                     </Button>
-                                    <Button variant="primary" style={{width: '100px'}} onClick={this.handleSubmit}>
+                                    <Button className="button-add" variant="primary" style={{width: '100px'}} onClick={this.handleSubmit}>
                                         {this.state.update ? "UPDATE" : "SAVE"}
                                     </Button>
                                 </Modal.Footer>
@@ -517,7 +514,7 @@ class FieldsPage extends Component {
                         </div>
                         <hr className="m-0"/>
                         <div className="p-3">
-                            <Table hover>
+                            <Table id="table" hover>
                                 <thead>
                                 <tr>
                                     <th>

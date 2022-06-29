@@ -5,6 +5,9 @@ import AuthService from "../../services/AuthenticationService";
 import QuestionnaireService from "../../services/QuestionnaireService";
 import {Navigate, useParams} from "react-router-dom";
 import "../../style.css";
+import SockJS from "sockjs-client";
+import {Stomp} from "@stomp/stompjs";
+import ResponseService from "../../services/ResponseService";
 
 const OPTIONS_DELIMITER = "~!@#%&_&%#@!~";
 
@@ -62,7 +65,13 @@ class QuestionnairePage extends Component {
                     })
                 break
             case "CHECKBOX":
-                controlElement = (<Form.Check name={field.label} type="checkbox"/>)
+                controlElement = field.fieldOptions.replaceAll(OPTIONS_DELIMITER, " ").split(" ")
+                    .map((option) => {
+                        return (<Form.Check><input
+                                class="form-check-input" type="checkbox" name={field.label} value={option}/>
+                                &nbsp;&nbsp;{option}</Form.Check>
+                        )
+                    })
                 break
             case "COMBOBOX":
                 controlElement = (
@@ -115,27 +124,13 @@ class QuestionnairePage extends Component {
                 continue
             }
             if (this.state.fields[i].required) {
-                if (this.state.fields[i].fieldType === "CHECKBOX") {
-                    if (value.length === 0) {
-                        result.push({
-                            position: (i + 1),
-                            value: "N/A"
-                        })
-                    } else {
-                        result.push({
-                            position: (i + 1),
-                            value: true
-                        })
-                    }
-                    continue
-                }
 
                 if ((value.length === 0) || (value1.toString() === '')) {
                     this.setState({
                         message: `Required answer for the ${this.state.fields[i].label} field`
                     })
                     return
-                } else if (value.length > 0 && this.state.fields[i].fieldType === "COMBOBOX") {
+                } else if ((value.length > 0) && ((this.state.fields[i].fieldType === "COMBOBOX") || (this.state.fields[i].fieldType === "CHECKBOX"))) {
                     result.push({
                         position: (i + 1),
                         value: value.map((v) => v.value).join(", ")
@@ -146,29 +141,15 @@ class QuestionnairePage extends Component {
                         value: value[0].value
                     })
                 }
-            }
-            else {
-                if (this.state.fields[i].fieldType === "CHECKBOX") {
-                    if (value.length === 0) {
-                        result.push({
-                            position: (i + 1),
-                            value: "N/A"
-                        })
-                    } else {
-                        result.push({
-                            position: (i + 1),
-                            value: true
-                        })
-                    }
-                    continue
-                }
+
+            } else {
 
                 if ((value.length === 0) || (value1.toString() === '')) {
                     result.push({
                         position: (i + 1),
                         value: "N/A"
                     })
-                } else if (value.length > 0 && this.state.fields[i].fieldType === "COMBOBOX") {
+                } else if ((value.length > 0) && ((this.state.fields[i].fieldType === "COMBOBOX") || (this.state.fields[i].fieldType === "CHECKBOX"))) {
                     result.push({
                         position: (i + 1),
                         value: value.map((v) => v.value).join(", ")
@@ -193,7 +174,32 @@ class QuestionnairePage extends Component {
                     this.setState({message: error.response.data})
                 }
             )
+        this.connectWebSocket()
+    }
 
+    connectWebSocket() {
+        let connection = new SockJS("/ws");
+        let stompClient = Stomp.over(connection);
+
+        stompClient.connect({}, () => {
+            stompClient.subscribe("/responses", (event) => {
+                if (event.body === "update") {
+                    ResponseService.getAllFields()
+                        .then(
+                            (r) => {
+                                this.setState({
+                                    responses: r.data.content.filter((response) => response.responses.length > 0),
+                                })
+                                this.setLoading(false);
+                            },
+                            error => {
+                                this.setState({message: error.response.data})
+                            }
+                        )
+
+                }
+            });
+        });
     }
 
     componentDidMount() {
@@ -214,6 +220,7 @@ class QuestionnairePage extends Component {
         if (this.state.redirect) {
             return <Navigate to="/success"/>
         }
+
         return (
             <>
                 <div className="bg-light" style={{height: '100vh'}}>

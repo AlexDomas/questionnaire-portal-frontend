@@ -71,11 +71,12 @@ class ResponsePage extends Component {
 
             }
         });
+
         ResponseService.getAllFields()
             .then(
                 (r) => {
                     this.setState({
-                        responses: r.data.content.filter((response) => response.responses.length > 0),
+                        responses: r.data.content,
                     })
                     this.setLoading(false);
                 },
@@ -95,6 +96,7 @@ class ResponsePage extends Component {
                     this.setState({message: error.response.data})
                 }
             )
+
     }
 
     render() {
@@ -115,6 +117,7 @@ class ResponsePage extends Component {
         if (!(user && user.token && user.token.toString() !== "null")) {
             return <Navigate to="/login"/>
         }
+
         return (
             <>
                 <div className="bg-light" style={{height: '100vh'}}>
@@ -125,7 +128,7 @@ class ResponsePage extends Component {
                         </div>
                         <hr className="m-0"/>
                         <div className="p-3">
-                            <Table hover>
+                            <Table id="table" hover>
                                 <thead>
                                 <tr>
                                     {
