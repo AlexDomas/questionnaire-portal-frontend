@@ -7,6 +7,8 @@ import ResponseService from "../../services/ResponseService";
 import FieldService from "../../services/FieldService";
 import AppPagination from "../../components/Pagination/AppPagination";
 import "../../style.css";
+import SockJS from "sockjs-client";
+import Stomp from 'stompjs';
 
 class ResponsePage extends Component {
     constructor(props) {
@@ -76,7 +78,7 @@ class ResponsePage extends Component {
             .then(
                 (r) => {
                     this.setState({
-                        responses: r.data.content,
+                        responses: r.data.content.filter((response) => response.responses.length > 0),
                     })
                     this.setLoading(false);
                 },
@@ -96,7 +98,22 @@ class ResponsePage extends Component {
                     this.setState({message: error.response.data})
                 }
             )
+        this.connectWebSocket();
 
+    }
+
+    connectWebSocket() {
+        alert(1);
+        let connection = new SockJS("http://localhost:8080/websocket-questionnaire");
+        alert(2);
+        let stompClient = Stomp.over(connection);
+        alert(3);
+        stompClient.connect({}, () => {
+            alert(4);
+            stompClient.subscribe("/topic/response", (event) => {
+                console.log('greeting');
+            });
+        });
     }
 
     render() {

@@ -5,9 +5,6 @@ import AuthService from "../../services/AuthenticationService";
 import QuestionnaireService from "../../services/QuestionnaireService";
 import {Navigate, useParams} from "react-router-dom";
 import "../../style.css";
-import SockJS from "sockjs-client";
-import {Stomp} from "@stomp/stompjs";
-import ResponseService from "../../services/ResponseService";
 
 const OPTIONS_DELIMITER = "~!@#%&_&%#@!~";
 
@@ -60,7 +57,7 @@ class QuestionnairePage extends Component {
 
                     .map((option) => {
                         return (<Form.Check><input
-                            class="form-check-input" type="radio" name={field.label} value={option}/>
+                            className="form-check-input" type="radio" name={field.label} value={option}/>
                             &nbsp;&nbsp;{option}</Form.Check>)
                     })
                 break
@@ -68,7 +65,7 @@ class QuestionnairePage extends Component {
                 controlElement = field.fieldOptions.replaceAll(OPTIONS_DELIMITER, " ").split(" ")
                     .map((option) => {
                         return (<Form.Check><input
-                                class="form-check-input" type="checkbox" name={field.label} value={option}/>
+                                className="form-check-input" type="checkbox" name={field.label} value={option}/>
                                 &nbsp;&nbsp;{option}</Form.Check>
                         )
                     })
@@ -174,32 +171,7 @@ class QuestionnairePage extends Component {
                     this.setState({message: error.response.data})
                 }
             )
-        this.connectWebSocket()
-    }
 
-    connectWebSocket() {
-        let connection = new SockJS("/ws");
-        let stompClient = Stomp.over(connection);
-
-        stompClient.connect({}, () => {
-            stompClient.subscribe("/responses", (event) => {
-                if (event.body === "update") {
-                    ResponseService.getAllFields()
-                        .then(
-                            (r) => {
-                                this.setState({
-                                    responses: r.data.content.filter((response) => response.responses.length > 0),
-                                })
-                                this.setLoading(false);
-                            },
-                            error => {
-                                this.setState({message: error.response.data})
-                            }
-                        )
-
-                }
-            });
-        });
     }
 
     componentDidMount() {
@@ -232,7 +204,8 @@ class QuestionnairePage extends Component {
                                 SUBMIT
                             </Button>
                             &nbsp;&nbsp;
-                            <Button className="w-25" onClick={this.resetAnswers} variant="secondary">
+                            <Button className="w-25" onClick={this.resetAnswers}
+                                    variant="secondary">
                                 RESET
                             </Button>
                             {this.state.message && (
