@@ -121,7 +121,7 @@ class QuestionnairePage extends Component {
                 continue
             }
             if (this.state.fields[i].required) {
-
+                alert(value1.toString())
                 if ((value.length === 0) || (value1.toString() === '')) {
                     this.setState({
                         message: `Required answer for the ${this.state.fields[i].label} field`

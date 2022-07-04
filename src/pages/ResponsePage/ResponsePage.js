@@ -103,11 +103,8 @@ class ResponsePage extends Component {
     }
 
     connectWebSocket() {
-        alert(1);
         let connection = new SockJS("http://localhost:8080/websocket-questionnaire");
-        alert(2);
         let stompClient = Stomp.over(connection);
-        alert(3);
         stompClient.connect({}, () => {
             alert(4);
             stompClient.subscribe("/topic/response", (event) => {
