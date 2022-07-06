@@ -54,10 +54,10 @@ const AppPagination = ({fieldsPerPage, totalFields, paginate, nextPage, previous
                 <button className="page-link" id="nextPageId" onClick={() => nextPage()}>&#9658;</button>
 
             </ul>
-            <Form.Select id="select-option">
+            <Form.Select id="select-option" defaultValue="2">
                 <option value="0">All</option>
                 <option value="1">1</option>
-                <option value="2" selected>2</option>
+                <option value="2">2</option>
                 <option value="3">5</option>
                 <option value="4">10</option>
             </Form.Select>
